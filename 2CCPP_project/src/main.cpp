@@ -5,8 +5,31 @@
 #include <vector>
 using namespace std;
 
+
+vector<string> availableColors = 
+    {
+        "rouge", "bleu", "vert", "jaune", "orange", "violet", "rose", "noir", "blanc"
+    };
 bool isDigit(const std::string& s) {
     return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
+}
+
+string toLower(string s)
+{
+    transform(s.begin(), s.end(), s.begin(),
+              [](unsigned char c){ return tolower(c); });
+    return s;
+}
+
+void displayAvailableColors(const vector<string>& colors)
+{
+    
+    std::cout << "Couleurs disponibles : ";
+    for (const auto& c : colors)
+    {
+        std::cout << c << " ";
+    }
+    std::cout << "\n" << std::endl;
 }
 int askNumPlayers() 
 {
@@ -37,19 +60,34 @@ int askNumPlayers()
 }
 
 string askColorPlayer(){
+    displayAvailableColors(availableColors);
     string color;
-    std::cout << "Entre la couleur de tes cases : bleu, vert, jaune, orange, rouge, violet, rose, blanc, marron" << std::endl;
     std::cin >> color;
     if (color != "bleu" && color != "vert" && color != "jaune" && color != "orange" && color != "rouge" && color != "violet" && color != "rose" && color != "blanc" && color != "marron" && color != "BLEU" && color != "VERT" && color != "JAUNE" && color != "ORANGE" && color != "ROUGE" && color != "VIOLET" && color != "ROSE" && color != "BLANC" && color != "MARRON" && color != "Bleu" && color != "Vert" && color != "Jaune" && color != "Orange" && color != "Rouge" && color != "Violet" && color != "Rose" && color != "Blanc" && color != "Marron")
     {
-        std::cout << "Couleur invalide, choisis parmi : bleu, vert, jaune, orange, rouge, violet, rose, blanc, marron" << std::endl;
+        std::cout << "Couleur invalide, choisis parmi les couleurs disponibles !" << std::endl;
         askColorPlayer();
     }
+    auto it = find_if(availableColors.begin(), availableColors.end(),
+            [&](const string& c){ return toLower(c) == toLower(color); });
+    if (it == availableColors.end()) 
+    {
+        cout << "Couleur deja prise, choisis une autre couleur." << std::endl;
+        askColorPlayer();
+    } 
+    else 
+    {
+        availableColors.erase(it);
+        return color;
+    }
+
+
     return color;
 }
 
 vector<Player> createPlayers(int numPlayers)
 {
+
     vector<Player> players;
 
     for (int i = 0; i < numPlayers; ++i)
@@ -61,8 +99,6 @@ vector<Player> createPlayers(int numPlayers)
         askColorPlayer() = p.colorName;
         players.push_back(p);
     }
-    std::cout << players[3].name << std::endl;
-    std::cout << players[3].colorName << std::endl;
     return players;
 }
 
