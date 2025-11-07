@@ -5,7 +5,8 @@
 #include <cctype>
 using namespace std;
 class Player {
-public:
-    string name;
-    string colorName;
-    string colorCode;};
+    public:
+        string name;
+        string colorName;
+        string colorCode;
+};

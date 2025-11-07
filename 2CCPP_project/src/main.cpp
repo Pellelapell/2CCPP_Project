@@ -2,9 +2,9 @@
 #include <string>
 #include <algorithm>
 #include "Player.hpp"
+#include "Board.hpp"
 #include <vector>
 using namespace std;
-
 
 vector<string> availableColors = 
     {
@@ -100,11 +100,14 @@ vector<Player> createPlayers(int numPlayers)
         players.push_back(p);
     }
     return players;
+    cout << "\nTous les joueurs ont été créés !" << endl;
 }
 
 int main() 
 {
-    createPlayers(askNumPlayers());
+    int numPlayers = askNumPlayers();
+    vector playerVector = createPlayers(numPlayers);
+    Board board(numPlayers);
     return 0;
 }
 
