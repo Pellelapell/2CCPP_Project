@@ -6,60 +6,63 @@
 #include <vector>
 using namespace std;
 
-vector<string> availableColors = 
+vector<string> availableColors =
     {
-        "rouge", "bleu", "vert", "jaune", "orange", "violet", "rose", "noir", "blanc"
-    };
-bool isDigit(const std::string& s) {
+        "rouge", "bleu", "vert", "jaune", "orange", "violet", "rose", "noir", "blanc"};
+bool isDigit(const std::string &s)
+{
     return !s.empty() && std::all_of(s.begin(), s.end(), ::isdigit);
 }
 
 string toLower(string s)
 {
     transform(s.begin(), s.end(), s.begin(),
-              [](unsigned char c){ return tolower(c); });
+              [](unsigned char c)
+              { return tolower(c); });
     return s;
 }
 
-void displayAvailableColors(const vector<string>& colors)
+void displayAvailableColors(const vector<string> &colors)
 {
-    
+
     std::cout << "Couleurs disponibles : ";
-    for (const auto& c : colors)
+    for (const auto &c : colors)
     {
         std::cout << c << " ";
     }
-    std::cout << "\n" << std::endl;
+    std::cout << "\n"
+              << std::endl;
 }
-int askNumPlayers() 
+int askNumPlayers()
 {
     int numPlayers;
     std::string input;
-    while(true)
+    while (true)
     {
-    std::cout <<"Combien de joueurs participeront, entre 1 et 9" << std::endl;
-    std::cin >> input;
-    while (isDigit(input)!=true)
-    {
-        std::cout << "Nombre de joueurs invalide" << std::endl;
-        std::cout <<"Combien de joueurs participeront, entre 1 et 9" << std::endl;
+        std::cout << "Combien de joueurs participeront, entre 1 et 9" << std::endl;
         std::cin >> input;
-    }
-    numPlayers  = std::stoi(input);
-    if (input.size()!=1||numPlayers < 1) 
-    {
-        std::cout << "Nombre de joueurs invalide" << std::endl;
-    }
-    else 
-    {
-        std::cout << "Nombre de joueurs: " << numPlayers << std::endl;
-        break;
-    }
+        while (isDigit(input) != true)
+        {
+            std::cout << "Nombre de joueurs invalide" << std::endl;
+            std::cout << "Combien de joueurs participeront, entre 1 et 9" << std::endl;
+            std::cin >> input;
+        }
+        numPlayers = std::stoi(input);
+        if (input.size() != 1 || numPlayers < 1)
+        {
+            std::cout << "Nombre de joueurs invalide" << std::endl;
+        }
+        else
+        {
+            std::cout << "Nombre de joueurs: " << numPlayers << std::endl;
+            break;
+        }
     }
     return numPlayers;
 }
 
-string askColorPlayer(){
+string askColorPlayer()
+{
     displayAvailableColors(availableColors);
     string color;
     std::cin >> color;
@@ -69,18 +72,18 @@ string askColorPlayer(){
         askColorPlayer();
     }
     auto it = find_if(availableColors.begin(), availableColors.end(),
-            [&](const string& c){ return toLower(c) == toLower(color); });
-    if (it == availableColors.end()) 
+                      [&](const string &c)
+                      { return toLower(c) == toLower(color); });
+    if (it == availableColors.end())
     {
         cout << "Couleur deja prise, choisis une autre couleur." << std::endl;
         askColorPlayer();
-    } 
-    else 
+    }
+    else
     {
         availableColors.erase(it);
         return color;
     }
-
 
     return color;
 }
@@ -103,13 +106,12 @@ vector<Player> createPlayers(int numPlayers)
     cout << "\nTous les joueurs ont été créés !" << endl;
 }
 
-int main() 
+int main()
 {
     int numPlayers = askNumPlayers();
     vector playerVector = createPlayers(numPlayers);
     Board board(numPlayers);
     cout << "\nVoici le plateau de jeu :" << endl;
-    board.display();    
+    board.display();
     return 0;
 }
-
