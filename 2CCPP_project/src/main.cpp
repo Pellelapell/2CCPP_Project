@@ -109,8 +109,6 @@ int main()
     vector playerVector = createPlayers(numPlayers);
     Board board(numPlayers);
     cout << "\nVoici le plateau de jeu :" << endl;
-    board.display();    
     return 0;
-
 }
 
