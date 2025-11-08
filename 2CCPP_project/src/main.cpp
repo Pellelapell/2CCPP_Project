@@ -99,7 +99,8 @@ vector<Player> createPlayers(int numPlayers)
         cout << "\n=== Joueur " << (i + 1) << " ===" << endl;
         cout << "Entre ton nom : ";
         cin >> p.name;
-        askColorPlayer() = p.colorName;
+        p.colorName = askColorPlayer();
+        p.assignColorToColorName();
         players.push_back(p);
     }
     return players;
@@ -113,5 +114,11 @@ int main()
     Board board(numPlayers);
     cout << "\nVoici le plateau de jeu :" << endl;
     board.display();
+    cout << "\n=== Liste des joueurs et leurs couleurs ===" << endl;
+    for (int i = 0; i < playerVector.size(); i++)
+    {
+        Player p = playerVector[i];
+        cout << p.getColoredName() << endl;
+    }
     return 0;
 }
