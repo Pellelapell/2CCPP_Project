@@ -69,16 +69,15 @@ string askColorPlayer()
     if (color != "bleu" && color != "vert" && color != "jaune" && color != "orange" && color != "rouge" && color != "violet" && color != "rose" && color != "blanc" && color != "marron" && color != "BLEU" && color != "VERT" && color != "JAUNE" && color != "ORANGE" && color != "ROUGE" && color != "VIOLET" && color != "ROSE" && color != "BLANC" && color != "MARRON" && color != "Bleu" && color != "Vert" && color != "Jaune" && color != "Orange" && color != "Rouge" && color != "Violet" && color != "Rose" && color != "Blanc" && color != "Marron" && color != "Marron")
     {
         std::cout << "Couleur invalide, choisis parmi les couleurs disponibles !" << std::endl;
-        askColorPlayer();
+        return askColorPlayer();
     }
-    auto it = availableColors.begin();
-    it = find_if(availableColors.begin(), availableColors.end(),
-                 [&](const string &c)
-                 { return toLower(c) == toLower(color); });
+    auto it = find_if(availableColors.begin(), availableColors.end(),
+                      [&](const string &c)
+                      { return toLower(c) == toLower(color); });
     if (it == availableColors.end())
     {
         cout << "Couleur deja prise, choisis une autre couleur." << std::endl;
-        askColorPlayer();
+        return askColorPlayer();
     }
     else
     {
