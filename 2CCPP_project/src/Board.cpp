@@ -4,7 +4,6 @@
 #include <algorithm>
 #include <cctype>
 using namespace std;
-#include "main.cpp"
 #include "Board.hpp"
 
     void Board::display()

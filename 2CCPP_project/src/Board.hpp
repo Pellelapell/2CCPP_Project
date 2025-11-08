@@ -1,8 +1,4 @@
-#include <iostream>
-#include <string>
-#include <unordered_map>
-#include <algorithm>
-#include <cctype>
+#pragma once
 using namespace std;
 
 class Board {
