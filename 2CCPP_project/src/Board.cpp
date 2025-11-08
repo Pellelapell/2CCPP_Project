@@ -8,7 +8,6 @@ using namespace std;
 
 void Board::display()
 {
-    std::cout << "je rentre dans la fonction" << size << std::endl;
     if (size == 20)
     {
         for (int i = 0; i < size; i++)
