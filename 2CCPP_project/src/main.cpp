@@ -4,6 +4,9 @@
 #include "Player.hpp"
 #include "Board.hpp"
 #include <vector>
+#include "Tile.hpp"
+#include "Tiledeck.hpp"
+#include "Game.hpp"
 using namespace std;
 
 vector<string> availableColors =
@@ -120,5 +123,6 @@ int main()
         Player p = playerVector[i];
         cout << p.getColoredName() << endl;
     }
+    game::run(playerVector, board, 9, "tuiles-cpp.txt", 12345);
     return 0;
 }

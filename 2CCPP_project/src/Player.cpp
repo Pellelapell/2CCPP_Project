@@ -7,7 +7,7 @@ using namespace std;
 
 void Player::assignColorToColorName()
 {
-    static const std::unordered_map<std::string, std::string> kAnsi =
+    static const std::unordered_map<std::string, std::string> ansiColorCode =
         {
             {"bleu", "\033[34m"},
             {"vert", "\033[32m"},
@@ -24,12 +24,17 @@ void Player::assignColorToColorName()
                    [](unsigned char c)
                    { return static_cast<char>(std::tolower(c)); });
 
-    auto it = kAnsi.find(key);
-    colorCode = (it != kAnsi.end() ? it->second : "\033[37m");
-    colorName = (it != kAnsi.end() ? key : "blanc");
+    auto it = ansiColorCode.find(key);
+    colorCode = (it != ansiColorCode.end() ? it->second : "\033[37m");
+    colorName = (it != ansiColorCode.end() ? key : "blanc");
 }
 
 std::string Player::getColoredName()
 {
     return colorCode + name + "(" + colorName + ")\033[0m";
+}
+
+int Player::getScore()
+{
+    return score;
 }

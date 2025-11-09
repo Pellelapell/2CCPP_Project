@@ -8,6 +8,10 @@ public:
     std::string colorName;
     std::string colorCode;
 
+    int getScore();
     void assignColorToColorName();
     std::string getColoredName();
+
+private:
+    int score;
 };
