@@ -3,10 +3,10 @@
 #include <string>
 #include <ostream>
 
-struct Cell
+struct Point
 {
-    int r = 0;
-    int c = 0;
+    int r;
+    int c;
 };
 
 class Tile
@@ -14,10 +14,10 @@ class Tile
 public:
     int id = -1;
     std::string name;
-    std::vector<Cell> cells;
+    std::vector<Point> cells; // <-- Point, pas Cell
 
     Tile() = default;
-    Tile(int id_, std::string name_, std::vector<Cell> cells_);
+    Tile(int id_, std::string name_, std::vector<Point> cells_);
 
     static Tile from01Mask(int id, const std::string &name,
                            const std::vector<std::string> &mask);
@@ -35,7 +35,7 @@ public:
     Tile flippedH() const;
     Tile flippedV() const;
 
-    std::vector<Cell> translated(int top, int left) const;
+    std::vector<Point> translated(int top, int left) const; // <-- Point
     bool containsRelative(int r, int c) const;
     std::string toAscii(char filled = '#', char empty = ' ') const;
 

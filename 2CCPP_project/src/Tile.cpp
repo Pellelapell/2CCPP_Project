@@ -3,19 +3,24 @@
 #include <sstream>
 #include <utility>
 
-Tile::Tile(int id_, std::string name_, std::vector<Cell> cells_)
-    : id(id_), name(std::move(name_)), cells(std::move(cells_)) { normalize(); }
+Tile::Tile(int id_, std::string name_, std::vector<Point> cells_)
+    : id(id_), name(std::move(name_)), cells(std::move(cells_))
+{
+    normalize();
+}
 
 Tile Tile::from01Mask(int id, const std::string &name,
                       const std::vector<std::string> &mask)
 {
-    std::vector<Cell> cells;
+    std::vector<Point> cells;
     for (int r = 0; r < (int)mask.size(); ++r)
     {
         const auto &row = mask[r];
         for (int c = 0; c < (int)row.size(); ++c)
+        {
             if (row[c] == '1')
                 cells.push_back({r, c});
+        }
     }
     return Tile{id, name, std::move(cells)};
 }
@@ -116,14 +121,15 @@ Tile Tile::flippedV() const
     return t;
 }
 
-std::vector<Cell> Tile::translated(int top, int left) const
+std::vector<Point> Tile::translated(int top, int left) const
 {
-    std::vector<Cell> out;
+    std::vector<Point> out;
     out.reserve(cells.size());
     for (auto &p : cells)
         out.push_back({p.r + top, p.c + left});
     return out;
 }
+
 bool Tile::containsRelative(int r, int c) const
 {
     for (auto &p : cells)
@@ -131,6 +137,7 @@ bool Tile::containsRelative(int r, int c) const
             return true;
     return false;
 }
+
 std::string Tile::toAscii(char filled, char empty) const
 {
     std::ostringstream oss;
@@ -144,6 +151,7 @@ std::string Tile::toAscii(char filled, char empty) const
     }
     return oss.str();
 }
+
 std::ostream &operator<<(std::ostream &os, const Tile &t)
 {
     os << t.toAscii();

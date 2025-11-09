@@ -36,5 +36,5 @@ std::string Player::getColoredName()
 
 int Player::getScore()
 {
-    return score;
+    // return score;
 }
