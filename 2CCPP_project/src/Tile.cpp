@@ -9,6 +9,11 @@ Tile::Tile(int id_, std::string name_, std::vector<Point> cells_)
     normalize();
 }
 
+std::ostream &operator<<(std::ostream &os, const Tile &t)
+{
+    os << t.toAscii('#', ' ');
+}
+
 Tile Tile::from01Mask(int id, const std::string &name,
                       const std::vector<std::string> &mask)
 {

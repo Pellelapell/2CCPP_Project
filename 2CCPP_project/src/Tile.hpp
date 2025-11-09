@@ -12,9 +12,11 @@ struct Point
 class Tile
 {
 public:
+    std::string toAscii(char filled = '#', char empty = ' ') const;
+
     int id = -1;
     std::string name;
-    std::vector<Point> cells; // <-- Point, pas Cell
+    std::vector<Point> cells;
 
     Tile() = default;
     Tile(int id_, std::string name_, std::vector<Point> cells_);
