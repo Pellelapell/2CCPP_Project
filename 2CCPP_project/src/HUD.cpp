@@ -1,7 +1,6 @@
 #include "Hud.hpp"
 #include <iostream>
 
-// Efface l’écran et remet le curseur en haut
 static inline void clearScreen()
 {
     std::cout << "\033[2J\033[H";
@@ -39,7 +38,7 @@ void Hud::drawAsciiTileBlock(const Tile &t, std::ostream &out)
         for (int c = 0; c < W; ++c)
         {
             bool filled = t.containsRelative(r, c);
-            out << (filled ? "██" : "  "); // double largeur = joli rendu
+            out << (filled ? "██" : "  ");
         }
         out << "\n";
     }
@@ -59,7 +58,6 @@ void Hud::printNextTiles(const std::vector<Tile> &next5)
         return;
     }
 
-    // Hauteur max des 5 vignettes
     int maxH = 0;
     for (int i = 0; i < (int)next5.size() && i < 5; ++i)
         maxH = std::max(maxH, next5[i].height());
@@ -81,7 +79,7 @@ void Hud::printNextTiles(const std::vector<Tile> &next5)
                 for (int c = 0; c < t.width(); ++c)
                     std::cout << "  ";
             }
-            std::cout << "   "; // espace entre vignettes
+            std::cout << "   ";
         }
         std::cout << "\n";
     }

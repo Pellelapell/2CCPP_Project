@@ -8,7 +8,19 @@
 #include "Tiledeck.hpp"
 #include "Game.hpp"
 using namespace std;
-
+#ifdef _WIN32
+#include <windows.h>
+static void init_console()
+{
+    SetConsoleOutputCP(CP_UTF8);
+    HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    DWORD mode = 0;
+    if (GetConsoleMode(hOut, &mode))
+    {
+        SetConsoleMode(hOut, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+    }
+}
+#endif
 vector<string> availableColors =
     {
         "rouge", "bleu", "vert", "jaune", "orange", "violet", "rose", "marron", "blanc"};
@@ -112,6 +124,9 @@ vector<Player> createPlayers(int numPlayers)
 
 int main()
 {
+#ifdef _WIN32
+    init_console();
+#endif
     int numPlayers = askNumPlayers();
     vector playerVector = createPlayers(numPlayers);
     Board board(numPlayers);
