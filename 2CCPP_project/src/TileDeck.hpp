@@ -6,6 +6,7 @@
 class TileDeck
 {
 public:
+    static TileDeck loadBuiltin(int numPlayers, unsigned seed);
     static TileDeck loadFromFile(const std::string &path, int numPlayers, unsigned seed);
 
     bool empty() const { return cursor_ >= tiles_.size(); }

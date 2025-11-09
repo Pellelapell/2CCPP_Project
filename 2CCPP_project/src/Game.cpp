@@ -18,15 +18,20 @@ namespace game
         return int(std::toupper((unsigned char)ch) - 'A');
     }
 
+    static inline int boardSizeForPlayers(size_t n)
+    {
+        return (n > 4 ? 30 : 20);
+    }
+
     void run(std::vector<Player> &players,
              Board &board,
              int rounds,
-             const char *tileFilePath,
              unsigned seed)
     {
         const int N = static_cast<int>(players.size());
+        const int boardSize = boardSizeForPlayers(players.size());
 
-        TileDeck deck = TileDeck::loadFromFile(tileFilePath, N, seed);
+        TileDeck deck = TileDeck::loadBuiltin(N, seed);
 
         for (int round = 1; round <= rounds; ++round)
         {
@@ -37,16 +42,9 @@ namespace game
                 Player &P = players[turn];
 
                 auto next5 = deck.peek(5);
-                std::cout << "\nTour de " << P.getColoredName() << "\n";
-                if (!next5.empty())
-                {
-                    std::cout << "Prochaines tuiles (0..4) :\n";
-                    for (int i = 0; i < (int)next5.size(); ++i)
-                    {
-                        std::cout << "[" << i << "]\n"
-                                  << next5[i] << "\n\n";
-                    }
-                }
+
+                Tile current;
+                Hud::printFrame(current, next5, boardSize, players, turn, round);
 
                 char act = 'T';
                 if (!next5.empty())
@@ -55,7 +53,6 @@ namespace game
                     std::cin >> act;
                 }
 
-                Tile current;
                 if (act == 'E' || act == 'e')
                 {
                     int idx = 0;
@@ -72,9 +69,10 @@ namespace game
                     current = deck.draw();
                 }
 
-                std::cout << "Tuile tiree (id=" << current.id << ") :\n"
-                          << current << "\n";
+                next5 = deck.peek(5);
+                Hud::printFrame(current, next5, boardSize, players, turn, round);
 
+                bool placed = false;
                 while (true)
                 {
                     std::cout << "(F)lip, (R)otate, (P)ose, (S)kip ? ";
@@ -84,34 +82,47 @@ namespace game
                     if (cmd == 'F' || cmd == 'f')
                     {
                         current.flipH();
-                        std::cout << "\nTuile :\n"
-                                  << current << "\n";
+                        Hud::printFrame(current, next5, boardSize, players, turn, round);
                     }
                     else if (cmd == 'R' || cmd == 'r')
                     {
                         current.rotateCW();
-                        std::cout << "\nTuile :\n"
-                                  << current << "\n";
+                        Hud::printFrame(current, next5, boardSize, players, turn, round);
                     }
                     else if (cmd == 'P' || cmd == 'p')
                     {
-                        std::cout << "OK, tu as pose la tuile (pas de rendu cellulaire pour l'instant).\n";
+                        // Avec ton Board actuel (rendu en points uniquement),
+                        // on valide la pose “logiquement” et on passe au suivant.
+                        // Quand tu auras un Board à grille, tu pourras demander ligne/colonne ici
+                        // et appeler board.placeTile(...)
+                        std::cout << "Tuile posee (rendu plateau simplifie pour le moment).\n";
+                        placed = true;
                         break;
                     }
                     else
-                    {
+                    { // Skip
                         std::cout << "Tuile defaussee.\n";
                         break;
                     }
                 }
 
+                // Affiche le plateau (points) à chaque fin de tour
                 std::cout << "\nPlateau :\n";
                 board.display();
             }
         }
 
         std::cout << "\n== Fin de partie apres " << rounds << " manches ==\n";
-        std::cout << "(Tu pourras brancher le vrai comptage des scores quand ton Board aura une grille.)\n";
     }
 
-}
+    // Rétro-compatibilité : on ignore le chemin et on appelle la version intégrée
+    void run(std::vector<Player> &players,
+             Board &board,
+             int rounds,
+             const char * /*filePathIgnored*/,
+             unsigned seed)
+    {
+        run(players, board, rounds, seed);
+    }
+
+} // namespace game

@@ -5,7 +5,7 @@
 #include <random>
 #include <cctype>
 #include <cmath>
-#include "TileData.hpp";
+#include "TileData.hpp"
 
 static std::vector<std::string> cleanData(const std::vector<std::string> &in)
 {
@@ -142,4 +142,17 @@ Tile TileDeck::exchangeChoose(size_t idx)
 
     ++cursor_;
     return chosen;
+}
+TileDeck TileDeck::loadBuiltin(int numPlayers, unsigned seed)
+{
+    std::istringstream iss(TileData::kTiles01);
+    std::vector<Tile> all = parse01Tiles(iss);
+
+    shuffle(all, seed);
+
+    int q = std::min((int)all.size(), quotaForPlayers(numPlayers));
+
+    TileDeck d;
+    d.tiles_.assign(all.begin(), all.begin() + q);
+    return d;
 }

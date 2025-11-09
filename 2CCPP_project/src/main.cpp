@@ -123,6 +123,6 @@ int main()
         Player p = playerVector[i];
         cout << p.getColoredName() << endl;
     }
-    game::run(playerVector, board, 9, "tuiles-cpp.txt", 12345);
+    game::run(playerVector, board, 9, 12345);
     return 0;
 }
