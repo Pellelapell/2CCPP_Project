@@ -1,11 +1,13 @@
 #pragma once
+
 #include <vector>
 #include <string>
 #include <ostream>
+
 #include "Tile.hpp"
 #include "Player.hpp"
 
-class Hud
+class HUD
 {
 public:
     static void printFrame(const Tile &current,

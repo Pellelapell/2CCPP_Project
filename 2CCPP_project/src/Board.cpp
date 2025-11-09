@@ -60,13 +60,12 @@ void Board::distributeBonuses(int numPlayers)
 
     auto place = [&](Bonus b, int count)
     {
-        std::uniform_int_distribution<int> dist(1, N_ - 2); // pas au bord
+        std::uniform_int_distribution<int> dist(1, N_ - 2);
         while (count > 0)
         {
             int r = dist(rng_), c = dist(rng_);
             if (g_[r][c].bonus != Bonus::None || g_[r][c].stone || g_[r][c].owner != -1)
                 continue;
-            // pas adjacent à un autre bonus
             bool ok = true;
             for (int d = 0; d < 4; ++d)
             {

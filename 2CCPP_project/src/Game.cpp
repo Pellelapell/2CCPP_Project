@@ -71,7 +71,7 @@ namespace game
 
                 auto next5 = deck.peek(5);
                 Tile current;
-                Hud::printFrame(current, next5, board.size(), players, pid, round);
+                HUD::printFrame(current, next5, board.size(), players, pid, round);
                 std::cout << board.renderForHud(players) << "\n";
 
                 char act = 'T';
@@ -103,7 +103,7 @@ namespace game
                 next5 = deck.peek(5);
                 while (true)
                 {
-                    Hud::printFrame(current, next5, board.size(), players, pid, round);
+                    HUD::printFrame(current, next5, board.size(), players, pid, round);
                     std::cout << board.renderForHud(players) << "\n";
                     std::cout << "(F)lip, (R)otate, (P)oser, (S)auter ? ";
                     char cmd;
@@ -193,7 +193,7 @@ namespace game
             Player &P = players[pid];
             while (P.coupons > 0)
             {
-                Hud::printFrame(Tile{}, {}, board.size(), players, pid, rounds);
+                HUD::printFrame(Tile{}, {}, board.size(), players, pid, rounds);
                 std::cout << board.renderForHud(players) << "\n";
                 std::cout << P.getColoredName() << " - Acheter une case 1x1 pour 1 coupon ? (O/N) coupons=" << P.coupons << ": ";
                 char ch;
