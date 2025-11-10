@@ -1,49 +1,25 @@
 #pragma once
-#include <vector>
 #include <string>
+#include <vector>
+#include <utility>
 #include <ostream>
-
-struct Point
-{
-    int r;
-    int c;
-};
 
 class Tile
 {
 public:
-    std::string toAscii(char filled = '#', char empty = ' ') const;
-
-    int id = -1;
-    std::string name;
-    std::vector<Point> cells;
-
     Tile() = default;
-    Tile(int id_, std::string name_, std::vector<Point> cells_);
+    explicit Tile(const std::vector<std::pair<int, int>> &cells);
 
-    static Tile from01Mask(int id, const std::string &name,
-                           const std::vector<std::string> &mask);
-
+    const std::vector<std::pair<int, int>> &cells() const;
     int width() const;
     int height() const;
-    void normalize();
-    void rotateCW();
-    void rotateCCW();
-    void flipH();
-    void flipV();
 
-    Tile rotatedCW() const;
-    Tile rotatedCCW() const;
-    Tile flippedH() const;
-    Tile flippedV() const;
+    std::vector<std::pair<int, int>> orientedCells(int rotDeg, bool flip) const;
 
-    std::vector<Point> translated(int top, int left) const; // <-- Point
-    bool containsRelative(int r, int c) const;
     std::string toAscii(char filled = '#', char empty = ' ') const;
 
 private:
-    int maxRow() const;
-    int maxCol() const;
+    std::vector<std::pair<int, int>> m_cells;
 };
 
 std::ostream &operator<<(std::ostream &os, const Tile &t);

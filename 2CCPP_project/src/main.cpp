@@ -110,19 +110,42 @@ vector<Player> createPlayers(int numPlayers)
     cout << "\nTous les joueurs ont été créés !" << endl;
 }
 
-int main()
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <string>
+
+#include "Board.hpp"
+#include "Player.hpp"
+#include "Game.hpp"
+
+int main(int argc, char **argv)
 {
-    int numPlayers = askNumPlayers();
-    vector playerVector = createPlayers(numPlayers);
-    Board board(numPlayers);
-    cout << "\nVoici le plateau de jeu :" << endl;
-    std::cout << board.renderForHud(playerVector) << std::endl;
-    cout << "\n=== Liste des joueurs et leurs couleurs ===" << endl;
-    for (int i = 0; i < playerVector.size(); i++)
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+
+    const int kRounds = 9;
+    int seed = 12345;
+    if (argc >= 2)
     {
-        Player p = playerVector[i];
-        cout << p.getColoredName() << endl;
+        seed = std::atoi(argv[1]);
     }
-    game::run(playerVector, board, 9, 12345);
+
+    int numPlayers = askNumPlayers();
+    std::vector<Player> playerVector = createPlayers(numPlayers);
+
+    Board board(numPlayers);
+    std::cout << "\nVoici le plateau de jeu :" << std::endl;
+    std::cout << board.renderForHud(playerVector) << std::endl;
+
+    std::cout << "\n=== Liste des joueurs et leurs couleurs ===" << std::endl;
+    for (std::size_t i = 0; i < playerVector.size(); ++i)
+    {
+        const Player &p = playerVector[i];
+        std::cout << p.getColoredName() << '\n';
+    }
+
+    game::run(playerVector, board, kRounds, seed);
+
     return 0;
 }

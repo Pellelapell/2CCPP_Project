@@ -1,157 +1,99 @@
 #include "Tile.hpp"
 #include <algorithm>
 #include <sstream>
-#include <utility>
+#include <cassert>
 
-Tile::Tile(int id_, std::string name_, std::vector<Point> cells_)
-    : id(id_), name(std::move(name_)), cells(std::move(cells_))
+static std::vector<std::pair<int, int>>
+normalize(std::vector<std::pair<int, int>> pts)
 {
-    normalize();
-}
-
-std::ostream &operator<<(std::ostream &os, const Tile &t)
-{
-    os << t.toAscii('#', ' ');
-}
-
-Tile Tile::from01Mask(int id, const std::string &name,
-                      const std::vector<std::string> &mask)
-{
-    std::vector<Point> cells;
-    for (int r = 0; r < (int)mask.size(); ++r)
+    if (pts.empty())
+        return pts;
+    int minx = pts[0].first, miny = pts[0].second;
+    for (auto &p : pts)
     {
-        const auto &row = mask[r];
-        for (int c = 0; c < (int)row.size(); ++c)
+        minx = std::min(minx, p.first);
+        miny = std::min(miny, p.second);
+    }
+    for (auto &p : pts)
+    {
+        p.first -= minx;
+        p.second -= miny;
+    }
+    return pts;
+}
+
+Tile::Tile(const std::vector<std::pair<int, int>> &cells)
+    : m_cells(normalize(cells)) {}
+
+const std::vector<std::pair<int, int>> &Tile::cells() const { return m_cells; }
+
+int Tile::width() const
+{
+    int maxx = 0;
+    for (auto &p : m_cells)
+        maxx = std::max(maxx, p.first);
+    return m_cells.empty() ? 0 : maxx + 1;
+}
+
+int Tile::height() const
+{
+    int maxy = 0;
+    for (auto &p : m_cells)
+        maxy = std::max(maxy, p.second);
+    return m_cells.empty() ? 0 : maxy + 1;
+}
+
+std::vector<std::pair<int, int>>
+Tile::orientedCells(int rotDeg, bool flip) const
+{
+    assert(rotDeg == 0 || rotDeg == 90 || rotDeg == 180 || rotDeg == 270);
+    std::vector<std::pair<int, int>> out;
+    out.reserve(m_cells.size());
+    for (auto [x, y] : m_cells)
+    {
+        int xr = x, yr = y;
+        switch (rotDeg)
         {
-            if (row[c] == '1')
-                cells.push_back({r, c});
+        case 0:
+            xr = x;
+            yr = y;
+            break;
+        case 90:
+            xr = -y;
+            yr = x;
+            break;
+        case 180:
+            xr = -x;
+            yr = -y;
+            break;
+        case 270:
+            xr = y;
+            yr = -x;
+            break;
         }
+        if (flip)
+            xr = -xr;
+        out.emplace_back(xr, yr);
     }
-    return Tile{id, name, std::move(cells)};
-}
-
-int Tile::maxRow() const
-{
-    int m = 0;
-    for (auto &p : cells)
-        m = std::max(m, p.r);
-    return m;
-}
-int Tile::maxCol() const
-{
-    int m = 0;
-    for (auto &p : cells)
-        m = std::max(m, p.c);
-    return m;
-}
-int Tile::width() const { return cells.empty() ? 0 : maxCol() + 1; }
-int Tile::height() const { return cells.empty() ? 0 : maxRow() + 1; }
-
-void Tile::normalize()
-{
-    if (cells.empty())
-        return;
-    int minr = cells[0].r, minc = cells[0].c;
-    for (auto &p : cells)
-    {
-        minr = std::min(minr, p.r);
-        minc = std::min(minc, p.c);
-    }
-    for (auto &p : cells)
-    {
-        p.r -= minr;
-        p.c -= minc;
-    }
-}
-
-void Tile::rotateCW()
-{
-    int H = height();
-    for (auto &p : cells)
-    {
-        int nr = p.c, nc = H - 1 - p.r;
-        p.r = nr;
-        p.c = nc;
-    }
-    normalize();
-}
-void Tile::rotateCCW()
-{
-    int W = width();
-    for (auto &p : cells)
-    {
-        int nr = W - 1 - p.c, nc = p.r;
-        p.r = nr;
-        p.c = nc;
-    }
-    normalize();
-}
-void Tile::flipH()
-{
-    int W = width();
-    for (auto &p : cells)
-        p.c = W - 1 - p.c;
-    normalize();
-}
-void Tile::flipV()
-{
-    int H = height();
-    for (auto &p : cells)
-        p.r = H - 1 - p.r;
-    normalize();
-}
-
-Tile Tile::rotatedCW() const
-{
-    Tile t = *this;
-    t.rotateCW();
-    return t;
-}
-Tile Tile::rotatedCCW() const
-{
-    Tile t = *this;
-    t.rotateCCW();
-    return t;
-}
-Tile Tile::flippedH() const
-{
-    Tile t = *this;
-    t.flipH();
-    return t;
-}
-Tile Tile::flippedV() const
-{
-    Tile t = *this;
-    t.flipV();
-    return t;
-}
-
-std::vector<Point> Tile::translated(int top, int left) const
-{
-    std::vector<Point> out;
-    out.reserve(cells.size());
-    for (auto &p : cells)
-        out.push_back({p.r + top, p.c + left});
-    return out;
-}
-
-bool Tile::containsRelative(int r, int c) const
-{
-    for (auto &p : cells)
-        if (p.r == r && p.c == c)
-            return true;
-    return false;
+    return normalize(out);
 }
 
 std::string Tile::toAscii(char filled, char empty) const
 {
-    std::ostringstream oss;
-    int H = height(), W = width();
-    for (int r = 0; r < H; ++r)
+    int w = width(), h = height();
+    if (w <= 0 || h <= 0)
+        return {};
+    std::vector<std::string> g(h, std::string(w, empty));
+    for (auto [x, y] : m_cells)
     {
-        for (int c = 0; c < W; ++c)
-            oss << (containsRelative(r, c) ? filled : empty);
-        if (r + 1 < H)
+        if (y >= 0 && y < h && x >= 0 && x < w)
+            g[y][x] = filled;
+    }
+    std::ostringstream oss;
+    for (int y = 0; y < h; ++y)
+    {
+        oss << g[y];
+        if (y + 1 < h)
             oss << '\n';
     }
     return oss.str();
